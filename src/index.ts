@@ -1,7 +1,9 @@
 import express, {Request, Response, NextFunction} from "express";
 import cors from "cors";
-import bcrypt from "bcrypt"
-import jwt, { JwtPayload } from "jsonwebtoken"
+import bcrypt from "bcrypt" // Kryptera till vår databas
+import jwt from "jsonwebtoken" // Skapa en krypterad token
+import { authMiddleware } from "./middleware/auth";
+
 import { PrismaClient, User } from '@prisma/client'
 import dotenv from "dotenv"
 
@@ -83,27 +85,27 @@ app.post("/sign-in", async (req: Request, res: Response) => {
     return;
   }
 
+  // Betrodd användare
   // Skapa en JWT - JSON Web Token
   const token = createJWT(user);
   console.log(token);
 
-  res.status(200).json({ token});
+  res.status(200).json({ token: token});
 
 
 })
 
-// Middleware 
-const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
 
-  // Kolla om token är valid
 
-}
+app.get("/landing-page", (req: Request, res: Response) => {
+  res.send("This is a public route");
 
+})
 
 app.get("/dashboard", authMiddleware, (req: Request, res: Response) => {
+  res.send("This is a protected route, but you are authorized!");
 
 })
-
 
 
 app.listen(3000, () => {
